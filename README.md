@@ -15,3 +15,5 @@ conf.set('spark.driver.host',"192.168.0.209") #spark_driver_host_ip
 conf.set("spark.driver.port", "33139") # default driver port, better explicit
 conf.set("spark.driver.blockManager.port", "45029") # default block manager port, better explicit
 ```
+
+https://hub.docker.com/repository/docker/guhzantut/raspi-spark

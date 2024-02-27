@@ -5,7 +5,7 @@ Just change the env SPARK_MASTER_URL value on worker's dockerfiles to the host_i
 Example config to run pyspark driver outside the cluster:
 
 ```
-conf = SparkConf().setMaster("spark://192.168.0.101:7077") #spark_master_ip:port
+conf = SparkConf().setMaster("spark://192.168.0.210:7077") #spark_master_ip:port
 conf.set("spark.executor.memory", "6g")
 conf.set("spark.driver.memory", "12g")
 conf.set("spark.executor.cores", "3")

@@ -31,7 +31,7 @@ WORKDIR /spark
 # Expose the necessary Spark ports
 EXPOSE 8081
 
-ENV SPARK_MASTER_URL spark://host.docker.internal:7077
+ENV SPARK_MASTER_URL spark://192.168.0.210:7077
 
 # Start the Spark master
 CMD ./sbin/start-worker.sh ${SPARK_MASTER_URL} && tail -f /dev/null

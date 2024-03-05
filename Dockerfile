@@ -14,6 +14,8 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
 RUN apt-get update && \
     apt-get install -y python3-pip
 
+RUN pip install py4j
+
 # Copy requirements.txt file
 COPY requirements.txt requirements.txt
 

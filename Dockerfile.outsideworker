@@ -14,7 +14,10 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
 RUN apt-get update && \
     apt-get install -y python3-pip
 
-RUN pip install py4j
+# Download and copy the JDBC driver JAR to a specific directory
+RUN mkdir -p /usr/share/java
+WORKDIR /usr/share/java
+RUN curl -o mssql-jdbc.jar https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.0.jre8/mssql-jdbc-9.4.0.jre8.jar
 
 # Copy requirements.txt file
 COPY requirements.txt requirements.txt

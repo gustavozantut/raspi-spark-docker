@@ -26,5 +26,5 @@ WORKDIR ${SPARK_HOME}
 # Expose necessary Spark ports
 EXPOSE 7077 8080
 
-# Start Spark master
-CMD ["./sbin/start-master.sh", "-h", "0.0.0.0"]
+# Start the Spark master
+CMD ["/bin/bash", "-c", "./sbin/start-master.sh && tail -f /dev/null"]

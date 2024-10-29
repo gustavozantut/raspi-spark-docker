@@ -29,4 +29,4 @@ WORKDIR ${SPARK_HOME}
 EXPOSE 8081
 
 # Start the Spark worker
-CMD ["./sbin/start-worker.sh", "${SPARK_MASTER_URL}"]
+CMD ./sbin/start-worker.sh ${SPARK_MASTER_URL} && tail -f /dev/nul

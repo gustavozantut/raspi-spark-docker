@@ -3,15 +3,15 @@ services:
     image: guhzantut/raspi-spark:master
     container_name: spark-master
     ports:
-      - "8080:8080"  # porta do master
-      - "7077:7077"  # porta de comunicação do Spark
+      - "0.0.0.0:8080:8080"
+      - "0.0.0.0:7077:7077"
     restart: always
 
   spark-worker:
     image: guhzantut/raspi-spark:worker
     container_name: spark-worker
     ports:
-      - "8081:8081"  # porta do worker
+      - "0.0.0.0:8081:8081"
     restart: always
     depends_on:
       - spark-master

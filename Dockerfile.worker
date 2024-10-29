@@ -6,7 +6,7 @@ ENV SPARK_VERSION=3.5.3 \
     HADOOP_VERSION=3 \
     SPARK_HOME=/spark \
     JDBC_DRIVER_DIR=/usr/share/java \
-    SPARK_MASTER_URL=spark://192.168.0.101:7077
+    SPARK_MASTER_URL=spark://pi-cluster-main:7077
 
 # Install dependencies, download Spark and JDBC driver in a single layer
 RUN apt-get update && \

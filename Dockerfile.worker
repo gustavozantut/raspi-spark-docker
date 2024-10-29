@@ -1,5 +1,5 @@
 # Base image with Java 8
-FROM openjdk:17-jdk
+FROM openjdk:17-jdk-bullseye
 
 # Set environment variables
 ENV SPARK_VERSION=3.5.3 \

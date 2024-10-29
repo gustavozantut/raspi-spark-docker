@@ -1,0 +1,6 @@
+services:
+  outside-worker:
+    image: guhzantut/raspi-spark:outside-worker
+    container_name: spark-outside-worker
+    network_mode: host
+    restart: always

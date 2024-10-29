@@ -1,5 +1,5 @@
 # Start from a base image with Java and Spark dependencies
-FROM openjdk:17-jdk
+FROM openjdk:17-jdk-bullseye
 
 # Set environment variables
 ENV SPARK_VERSION=3.5.3 \

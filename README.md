@@ -1,1 +1,72 @@
-# Configuração de um Cluster Apache Spark com Docker\n\nEste guia passo a passo explica como configurar um cluster Apache Spark utilizando Docker. O cluster consistirá de um Spark Master e múltiplos Workers, permitindo a execução distribuída de aplicações Spark.\n\n## Pré-requisitos\n\nAntes de começar, certifique-se de ter o seguinte instalado em sua máquina:\n\n- [Docker](https://docs.docker.com/get-docker/) (versão 20.10 ou superior)\n- [Docker Compose](https://docs.docker.com/compose/install/) (versão 1.25 ou superior)\n\n## Importante\n\nAntes de iniciar, **lembre-se de mudar o IP do host** onde o Spark Master será definido nos Dockerfiles dos Workers.\n\n## Estrutura do Projeto\n\nEste projeto inclui os seguintes arquivos de configuração:\n\n- `compose-host.yaml`: Configuração do Docker Compose para iniciar o Spark Master e Workers em um host.\n- `compose-outside.yaml`: Configuração do Docker Compose para iniciar um Worker em um host diferente.\n\n## Passo a Passo para Configuração\n\n### 1. Criar o Spark Master e Workers no Host\n\nNo terminal, navegue até o diretório onde o arquivo `compose-host.yaml` está localizado e execute o seguinte comando:\n\n```bash\n"docker compose -f compose-host.yaml up -d"\n```\n\nEste comando irá iniciar o Spark Master e um Worker no mesmo host.\n\n### 2. Iniciar um Worker em Outro Host\n\nEm um segundo host, onde você deseja adicionar mais um Worker ao cluster, execute o seguinte comando:\n\n```bash\n"docker compose -f compose-outside.yaml up -d"\n```\n\nIsso adicionará um Worker ao cluster existente no host remoto.\n\n### 3. Interagir com o Cluster via Jupyter Notebook\n\nPara interagir com o cluster a partir de um Jupyter Notebook localizado em outro host, você deve mapear as seguintes portas ao rodar a imagem Docker:\n\n- **7077**: Spark Master\n- **4040**: Web UI do Spark\n- **33139**: Porta do Driver\n- **45029**: Porta do Block Manager\n\n#### Exemplo de Comando para Rodar a Imagem Docker:\n\n```bash\n"docker run -p 4040:4040 -p 7077:7077 -p 33139:33139 -p 45029:45029 <imagem-do-jupyter>"\n```\n\n### 4. Configuração do PySpark Driver\n\nDentro do seu Jupyter Notebook, você pode usar o seguinte exemplo de configuração do PySpark Driver:\n\n```python\nfrom pyspark.sql import SparkSession\nfrom pyspark import SparkConf\n\nconf = SparkConf().setMaster(\"spark://192.168.0.101:7077\")  # Altere para o IP do seu Spark Master\nconf.set(\"spark.executor.memory\", \"6g\")\nconf.set(\"spark.driver.memory\", \"12g\")\nconf.set(\"spark.executor.cores\", \"3\")\nconf.set(\"spark.driver.cores\", \"6\")\nconf.set(\"spark.driver.bindAddress\", \"0.0.0.0\")\nconf.set('spark.driver.host', '192.168.0.210')  # Altere para o IP do seu host\nconf.set(\"spark.driver.port\", \"33139\")\nconf.set(\"spark.driver.blockManager.port\", \"45029\")\nconf.set(\"spark.default.parallelism\", \"512\")\nconf.set(\"spark.sql.shuffle.partitions\", \"128\")\nconf.set(\"spark.sql.debug.maxToStringFields\", \"200\")\nconf.set(\"spark.sql.execution.arrow.pyspark.enabled\", \"true\")\nconf.set(\"spark.sql.files.maxPartitionBytes\", \"128mb\")\nconf.set(\"spark.shuffle.file.buffer\", \"1mb\")\nconf.set(\"spark.sql.autoBroadcastHashJoin\", \"512mb\")\nconf.set(\"spark.sql.repl.eagerEval.enabled\", True)\n\nspark = SparkSession.builder.config(conf).setAppName(\"Jupyter\").getOrCreate()\n```\n\n## Conclusão\n\nCom essas etapas, você deve ser capaz de configurar e interagir com um cluster Apache Spark utilizando Docker. Para mais informações, consulte a documentação oficial do [Apache Spark](https://spark.apache.org/docs/latest/) e [Docker](https://docs.docker.com/).
+# Configuração de um Cluster Apache Spark com Docker
+
+Este guia detalha como configurar um cluster Apache Spark utilizando Docker. O cluster inclui um Spark Master e múltiplos Workers, permitindo a execução de aplicações Spark distribuídas.
+
+## Pré-requisitos
+
+Certifique-se de ter os seguintes itens instalados:
+
+- [Docker](https://docs.docker.com/get-docker/) (versão 20.10 ou superior)
+- [Docker Compose](https://docs.docker.com/compose/install/) (versão 1.25 ou superior)
+
+## Importante
+
+Antes de iniciar, **lembre-se de atualizar o IP do host** onde o Spark Master será configurado nos Dockerfiles dos Workers.
+
+## Estrutura do Projeto
+
+Este projeto inclui os seguintes arquivos de configuração:
+
+- `compose-host.yaml`: Arquivo Docker Compose para iniciar o Spark Master e um Worker no mesmo host.
+- `compose-outside.yaml`: Arquivo Docker Compose para iniciar um Worker em outro host.
+
+## Passo a Passo para Configuração
+
+### 1. Iniciar o Spark Master e Worker no Host Principal
+
+No terminal, navegue até o diretório onde está o arquivo `compose-host.yaml` e execute o comando:
+
+```bash
+docker compose -f compose-host.yaml up -d
+````
+Este comando irá iniciar o Spark Master e um Worker no mesmo host.
+
+### 2. Adicionar um Worker em Outro Host
+
+Em um segundo host, onde você deseja adicionar um Worker ao cluster, execute o comando:
+
+```bash
+docker compose -f compose-outside.yaml up -d
+```
+Isso adicionará um Worker ao cluster existente.
+
+### 3. Interagir com o Cluster via Jupyter Notebook
+
+Para interagir com o cluster a partir de um Jupyter Notebook em outro host, você deve mapear as portas ao rodar a imagem Docker:
+
+- **7077**: Porta do Spark Master
+- **4040**: Porta da Web UI do Spark
+- **33139**: Porta do Driver
+- **45029**: Porta do Block Manager
+
+#### Exemplo de Comando para Rodar a Imagem Docker
+
+```bash
+docker run -p 4040:4040 -p 7077:7077 -p 33139:33139 -p 45029:45029 <imagem-do-jupyter>
+```
+### 4. Configuração do PySpark Driver
+
+No Jupyter Notebook, use a seguinte configuração para conectar ao Spark Master:
+
+```python
+from pyspark.sql import SparkSession
+from pyspark import SparkConf
+
+conf = SparkConf().setMaster("spark://192.168.0.101:7077")  # Altere para o IP do seu Spark Master
+conf.set("spark.executor.memory", "6g")
+conf.set("spark.driver.memory", "12g")
+conf.set("spark.executor.cores", "3")
+conf.set("spark.driver.cores", "6")
+conf.set("spark.driver.bindAddress", "0.0.0.0")
+conf.set('spark.driver.host', '192.168.0.
+```

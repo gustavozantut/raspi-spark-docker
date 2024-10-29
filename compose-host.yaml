@@ -2,16 +2,13 @@ services:
   spark-master:
     image: guhzantut/raspi-spark:master
     container_name: spark-master
-    ports:
-      - "0.0.0.0:8080:8080"
-      - "0.0.0.0:7077:7077"
+    network_mode: host
     restart: always
 
   spark-worker:
     image: guhzantut/raspi-spark:worker
     container_name: spark-worker
-    ports:
-      - "0.0.0.0:8081:8081"
+    network_mode: host
     restart: always
     depends_on:
       - spark-master

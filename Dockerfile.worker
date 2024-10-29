@@ -1,40 +1,32 @@
-# Start from a base image with Java and Spark dependencies
+# Base image with Java 8
 FROM openjdk:8-jdk
 
 # Set environment variables
-ENV SPARK_VERSION=3.2.4
-ENV HADOOP_VERSION=3.2
+ENV SPARK_VERSION=3.2.4 \
+    HADOOP_VERSION=3.2 \
+    SPARK_HOME=/spark \
+    JDBC_DRIVER_DIR=/usr/share/java \
+    SPARK_MASTER_URL=spark://192.168.0.101:7077
 
-#Download and extract Spark
-RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
+# Install dependencies, download Spark and JDBC driver in a single layer
+RUN apt-get update && \
+    apt-get install -y wget python3-pip && \
+    wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
     tar -xvf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
     rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
-    mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} /spark
+    mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} ${SPARK_HOME} && \
+    mkdir -p ${JDBC_DRIVER_DIR} && \
+    curl -o ${JDBC_DRIVER_DIR}/mssql-jdbc.jar https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.0.jre8/mssql-jdbc-9.4.0.jre8.jar
 
-RUN apt-get update && \
-    apt-get install -y python3-pip
+# Copy and install Python dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt && rm requirements.txt
 
-# Download and copy the JDBC driver JAR to a specific directory
-RUN mkdir -p /usr/share/java
-WORKDIR /usr/share/java
-RUN curl -o mssql-jdbc.jar https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.0.jre8/mssql-jdbc-9.4.0.jre8.jar
+# Set Spark as the working directory
+WORKDIR ${SPARK_HOME}
 
-# Copy requirements.txt file
-COPY requirements.txt requirements.txt
-
-# Install Python dependencies including PySpark
-RUN pip install -r requirements.txt
-
-# Remove requirements.txt file
-RUN rm requirements.txt
-
-# Set the working directory
-WORKDIR /spark
-
-# Expose the necessary Spark ports
+# Expose necessary Spark port
 EXPOSE 8081
 
-ENV SPARK_MASTER_URL spark://192.168.0.101:7077
-
-# Start the Spark master
-CMD ./sbin/start-worker.sh ${SPARK_MASTER_URL} && tail -f /dev/null
+# Start the Spark worker
+CMD ["./sbin/start-worker.sh", "${SPARK_MASTER_URL}"]

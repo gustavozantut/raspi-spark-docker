@@ -2,13 +2,6 @@
 
 Este guia detalha como configurar um cluster Apache Spark utilizando Docker. O cluster inclui um Spark Master e múltiplos Workers, permitindo a execução de aplicações Spark distribuídas.
 
-## Pré-requisitos
-
-Certifique-se de ter os seguintes itens instalados:
-
-- [Docker](https://docs.docker.com/get-docker/) (versão 20.10 ou superior)
-- [Docker Compose](https://docs.docker.com/compose/install/) (versão 1.25 ou superior)
-
 ## Importante
 
 Antes de iniciar, **lembre-se de atualizar o IP do host** onde o Spark Master será configurado nos Dockerfiles dos Workers.

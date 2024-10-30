@@ -67,6 +67,6 @@ conf.set("spark.executor.memory", "6g")
 conf.set("spark.driver.memory", "12g")
 conf.set("spark.executor.cores", "3")
 conf.set("spark.driver.cores", "6")
-conf.set("spark.driver.bindAddress", "0.0.0.0")
-conf.set('spark.driver.host', '192.168.0.
+conf.set("spark.driver.bindAddress", "0.0.0.0") # Manter, ip interno docker
+conf.set('spark.driver.host', '192.168.0.210') # Altere para o ip do host do jupyter
 ```

@@ -1,4 +1,4 @@
-# Start from a base image with Java and Spark dependencies
+# Base image with Java 8
 FROM openjdk:17-jdk-bullseye
 
 # Set environment variables
@@ -24,7 +24,9 @@ RUN pip install -r requirements.txt && rm requirements.txt
 # Set Spark as the working directory
 WORKDIR ${SPARK_HOME}
 
-ENV SPARK_MASTER_URL=spark://192.168.0.210:7077
+ENV SPARK_PUBLIC_DNS=192.168.0.210 \
+    SPARK_LOCAL_IP=0.0.0.0\
+    SPARK_MASTER_URL=spark://192.168.0.210:7077
 
 # Expose necessary Spark port
 EXPOSE 8081

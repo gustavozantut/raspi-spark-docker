@@ -1,0 +1,14 @@
+services:
+  spark-master:
+    image: guhzantut/raspi-spark:master-wsl
+    container_name: spark-master
+    network_mode: host
+    restart: always
+
+  # spark-worker:
+  #   image: guhzantut/raspi-spark:worker-wsl
+  #   container_name: spark-worker
+  #   network_mode: host
+  #   restart: always
+  #   depends_on:
+  #     - spark-master

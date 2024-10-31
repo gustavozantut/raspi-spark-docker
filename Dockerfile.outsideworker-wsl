@@ -5,7 +5,8 @@ FROM openjdk:17-jdk-bullseye
 ENV SPARK_VERSION=3.5.3 \
     HADOOP_VERSION=3 \
     SPARK_HOME=/spark \
-    JDBC_DRIVER_DIR=/usr/share/java
+    JDBC_DRIVER_DIR=/usr/share/java \
+    SPARK_MASTER_URL=spark://192.168.0.101:7077
 
 # Install dependencies, download Spark and JDBC driver in a single layer
 RUN apt-get update && \
@@ -24,7 +25,8 @@ RUN pip install -r requirements.txt && rm requirements.txt
 # Set Spark as the working directory
 WORKDIR ${SPARK_HOME}
 
-ENV SPARK_MASTER_URL=spark://192.168.0.210:7077
+ENV SPARK_PUBLIC_DNS=192.168.0.210 \
+    SPARK_LOCAL_IP=0.0.0.0
 
 # Expose necessary Spark port
 EXPOSE 8081

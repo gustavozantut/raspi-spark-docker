@@ -24,7 +24,7 @@ RUN pip install -r requirements.txt && rm requirements.txt
 # Set Spark as the working directory
 WORKDIR ${SPARK_HOME}
 
-ENV SPARK_MASTER_URL=spark://192.168.0.210:7077
+ENV SPARK_MASTER_URL=spark://192.168.0.101:7077
 
 # Expose necessary Spark port
 EXPOSE 8081
